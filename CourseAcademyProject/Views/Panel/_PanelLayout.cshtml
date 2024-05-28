@@ -1,0 +1,114 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject UserManager<User> userManager;
+@{
+    var currentUser = await userManager.GetUserAsync(User);
+    var routDataValue = ViewContext.RouteData.Values["action"].ToString();
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Bootstrap Admin Dashboard</title>
+    @await Html.PartialAsync("_StylesPartial")
+    <link rel="stylesheet" href="~/assets/css/styleAdmin.css">
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body>
+    <div class="wrapper">
+        <aside id="sidebar" class="js-sidebar">
+            <!-- Content For Sidebar -->
+            <div class="h-100">
+                <div class="sidebar-logo">
+                    <a asp-controller="Panel" asp-action="Index">Course Academy</a>
+                </div>
+                <ul class="sidebar-nav">
+                    <li class="sidebar-header">
+                        Admin Elements
+                    </li>
+                    <li class="sidebar-item @(routDataValue == "Index" ? "bg-secondary" : "")">
+                        <a asp-controller="Panel" asp-action="Index" class="sidebar-link">
+                            <i class="fa-solid fa-list pe-2"></i>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="#" class="sidebar-link collapsed" data-bs-target="#pages" data-bs-toggle="collapse"
+                           aria-expanded="false">
+                            <i class="fa-solid fa-file-lines pe-2"></i>
+                            Couese elements
+                        </a>
+                        <ul id="pages" class="sidebar-dropdown list-unstyled collapse 
+                            @(routDataValue == "Categories" || routDataValue == "Courses" 
+                             || routDataValue == "Lessons" || routDataValue == "Comments" 
+                             || routDataValue == "Tests" ? "show" : "")" data-bs-parent="#sidebar">
+
+                            <li class="sidebar-item @(routDataValue == "Categories" ? "bg-secondary" : "")">
+                                <a asp-action="Categories" asp-controller="Category" class="sidebar-link">Category</a>
+                            </li>
+                            <li class="sidebar-item @(routDataValue == "Courses" ? "bg-secondary" : "")">
+                                <a asp-action="Courses" asp-controller="Course" class="sidebar-link">Courses</a>
+                            </li>
+                            <li class="sidebar-item @(routDataValue == "Lessons" ? "bg-secondary" : "")">
+                                <a asp-action="Lessons" asp-controller="Lesson" class="sidebar-link">Lessons</a>
+                            </li>
+                            <li class="sidebar-item @(routDataValue == "Comments" ? "bg-secondary" : "")">
+                                <a asp-action="Comments" asp-controller="Comment" class="sidebar-link">Comments</a>
+                            </li>
+                            <li class="sidebar-item @(routDataValue == "Tests" ? "bg-secondary" : "")">
+                                <a asp-action="Tests" asp-controller="Test" class="sidebar-link">Tests</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="sidebar-item @(routDataValue == "Users" ? "bg-secondary" : "")">
+                        <a asp-action="Users" asp-controller="Panel" class="sidebar-link">
+                            <i class="fa-regular fa-user pe-2"></i>
+                            Users
+                        </a>
+                    </li>
+                    <li class="sidebar-item @(routDataValue == "Blogs" ? "bg-secondary" : "")">
+                        <a asp-action="Blogs" asp-controller="Blog" class="sidebar-link">
+                            <i class="fa-brands fa-blogger"></i>
+                            Blog
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </aside>
+        <div class="main">
+            <nav class="navbar navbar-expand px-3 border-bottom">
+                <button class="btn" id="sidebar-toggle" type="button">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse navbar">
+                    <ul class="navbar-nav">
+                        <li class="nav-item ">
+                            <a asp-action="Index" asp-controller="Home" class="nav-link sidebar-link text-primary">Go to main site page </a>
+                        </li>
+                        <li class="nav-item dropdown">
+
+                            <a href="#" data-bs-toggle="dropdown" class="nav-icon pe-md-0">
+                                <img src="@currentUser.Image" class="avatar img-fluid rounded" alt="">
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-end text-center">
+                                <a asp-action="AccountSettings" asp-controller="Account" class="dropdown-item">@currentUser.FirstName</a>
+                                <form method="post" asp-controller="Account" asp-action="Logout" class="mt-2">
+                                    <input class="btn btn-danger btn-sm" type="submit" value="Logout" />
+                                </form>
+                            </div>
+                        </li>
+                        
+                    </ul>
+                </div>
+            </nav>
+        @RenderBody()
+        </div>
+
+    </div>
+    @await Html.PartialAsync("_ScriptsPartial")
+    <script src="~/assets/js/scriptAdmin.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
+

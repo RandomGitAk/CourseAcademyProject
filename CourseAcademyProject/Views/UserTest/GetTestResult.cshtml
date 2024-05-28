@@ -1,0 +1,81 @@
+﻿@using CourseAcademyProject.Models.Test
+@model Test
+@{
+    ViewData["Title"] = "Test";
+    List<Question> questions = Model.Questions.ToList();
+    int countCorrectAnswers = questions.SelectMany(q=> q.Answers)
+    .Where(a=> a.IsCorrect)
+    .Count(a=> questions.Any(q=> q.UserAnswers.Any(ua=> ua.AnswerId == a.Id)));
+}
+<section class="mt-5 container">
+    <div class="row pt-4 px-2 bg-white">
+        <h1 class="h5">@Model.Title</h1>
+        <hr class="my-4">
+
+        <div class="col-6">
+            <p class="lh-base">@Model.Description</p>
+        </div>
+        <div class="col-6 text-lg-end">
+            <input class="btn btn-white fw-500 shadow my-2 disable-input" id="timespent" type="text" name="SpendTime" value="@Model.TestResults.FirstOrDefault().CompletionTime" readonly>
+        </div>
+        <hr class="my-4">
+
+        <div class="row gx-5 align-items-center mb-4">
+            <div class="col-lg-6">
+                <h5 class="text-primary">
+
+                    <i class="fa-regular fa-square-check fw-light" style="color: #63E6BE;"></i>
+                    Correct answers
+                    <span class="badge rounded-pill text-bg-primary">@countCorrectAnswers out of @questions.Count</span>
+                </h5>
+            </div>
+        </div>
+        <hr> 
+       
+       
+        @for (int i = 0; i < questions.Count; i++)
+        {
+            <input type="hidden" name="QuestionAnswers[@i].QuestionId" value="@questions[i].Id">
+            <h5>@questions[i].Content</h5>
+            <p><span>Question #@(i + 1)</span><br></p>
+            <div class="p-5 mb-4 bg-light rounded-3 disable">
+                @{
+                    int answerCounter = 0;
+                    var selectedUserAnswerAndQuestion = questions[i].UserAnswers.FirstOrDefault(e => e.QuestionId == questions[i].Id);
+                    var selectedAnswerId = selectedUserAnswerAndQuestion?.AnswerId;
+                    string isCorrectClass = "";
+                }
+                    @foreach (var answer in questions[i].Answers)
+                     {
+                        isCorrectClass = ((selectedAnswerId == answer.Id && answer.IsCorrect || answer.IsCorrect) ? "correct" : (selectedAnswerId == answer.Id && answer.IsCorrect == false)? "incorrect" : "");
+                        
+                        if (answerCounter % 2 == 0)
+                        {
+                            @:<div class="row">
+                        }
+                        <div class="col-md-6">
+                            <div class="form-check form-check-inline @(isCorrectClass)">
+                                <input class="form-check-input" type="radio" name="QuestionAnswers[@i].SelectedAnswerId" value="@answer.Id" disabled @(selectedAnswerId == answer.Id ? "checked" : "")>
+                                <label class="form-check-label" for="QuestionAnswers[@i].SelectedAnswerId">@answer.Content</label>
+                            </div>
+                        </div>
+
+                         if (answerCounter % 2 != 0 || answerCounter == questions[i].Answers.Count() - 1)
+                        {
+                           @:</div>
+                        }
+
+                        {
+                          answerCounter++;
+                        }
+                    }
+
+            </div>
+        }
+            <br />
+            <div class="form-group  text-center">
+                   <a asp-action="GetCourseTests" asp-controller="UserTest" asp-route-courseId="@Model.CourseId" class="btn btn-primary d-inline-block mb-3">Back</a>
+            </div>
+    </div>
+</section>
+@await Html.PartialAsync("_FooterPartial")

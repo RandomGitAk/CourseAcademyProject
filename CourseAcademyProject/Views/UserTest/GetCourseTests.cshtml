@@ -1,0 +1,63 @@
+﻿@using CourseAcademyProject.Models.Test
+@using CourseAcademyProject.ViewModels.Test
+@{
+    ViewData["Title"] = "Course tests";
+}
+@model CompletedAndIncompletedTestsViewModel
+
+<div class="album my-5 custom-background">
+    <div class="container mt-5">
+        <h3>Tests</h3>
+        <hr class="mb-4">
+        <form asp-action="FindTest" asp-controller="UserTest" method="post">
+            <div class="input-group input-group-lg mb-5">
+                <input class="form-control input-search-mobile" name="testName" value="@Model.TestName" type="text" placeholder="Enter the name of the test...">
+                <input type="hidden" name="courseId" value="@Model.CourseId" />
+                <button class="btn btn-primary animated--fade-in-up" type="submit">Search</button>
+            </div>
+        </form>
+        <hr class="mb-4">
+        <h5>Active</h5>
+        @if (Model.IncompletedTests.Count != 0)
+        {
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+                @foreach (Test test in Model.IncompletedTests)
+                {
+                    <div class="col-sm-6">
+                        <a asp-action="GetTest" asp-controller="UserTest" asp-route-testId="@test.Id"
+                        asp-route-returnUrl="@ViewContext.HttpContext.Request.PathAndQuery()">
+                             @await Html.PartialAsync("_Test", test)
+                        </a>
+                    </div>
+
+                }
+            </div>
+        }
+        else
+        {
+            <div class="text-center my-10">
+                <h2>Nothing found!</h2>
+                <p class="lead text-gray-500 mb-4">
+                    You may have made a spelling error in your search or
+                    you have not yet been given this test.
+                </p>
+                <a class="btn btn-primary text-white" asp-action="GetCourseTests" asp-controller="UserTest" asp-route-courseId="@Model.CourseId">Reset search</a>
+            </div>
+        }
+
+        <hr class="mb-4">
+        <h5>Completed</h5>
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3 ">
+            @foreach (Test test in Model.CompletedTests)
+            {
+                <div class="col-sm-6">
+                    <a asp-action="GetTestResult" asp-controller="UserTest" asp-route-testId="@test.Id"
+                       asp-route-returnUrl="@ViewContext.HttpContext.Request.PathAndQuery()">
+                        @await Html.PartialAsync("_Test", test)
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+@await Html.PartialAsync("_FooterPartial")

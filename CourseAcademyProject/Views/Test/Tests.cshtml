@@ -1,0 +1,100 @@
+﻿@using CourseAcademyProject.Models.Test
+@{
+    Layout = "~/Views/Panel/_PanelLayout.cshtml";
+    ViewData["Title"] = "Tests";
+}
+@model IEnumerable<Test>
+<main class="content px-3 py-2">
+    <div class="mb-3">
+        <h4>Сontrol panel</h4>
+    </div>
+
+    <div class="col">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a asp-action="Index" asp-controller="Panel" class="text-decoration-none">Course elements</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">
+                    Tests
+                </li>
+            </ol>
+        </nav>
+    </div>
+
+    <div class="row g-4 py-5 row-cols-1">
+
+        <a asp-action="CreateTest" asp-controller="Test" class="btn btn-primary mx-auto w-50">Add a new test</a>
+
+        <div class="input-group themability-search">
+            @{
+                ViewBag.searches = new string[] { "Title" };
+            }
+            @await Html.PartialAsync("_SearchOptions", Model)
+        </div>
+
+
+        <div class="p-5 mb-4 bg-light rounded-3 ovx table-responsive">
+            <table class="table">
+                <tr><th>Title</th><th>TimeToPass</th><th>Questions</th><th></th><th></th><th></th></tr>
+                @foreach (var test in Model)
+                {
+
+                    <tr data-rowid="@test.Id">
+                        <td>@test.Title</td>
+                        <td>@test.TimeToPass</td>
+                        <td>@(test.Questions?.Count() ?? 0)</td>
+                        <td><a class="btn btn-sm btn-success" asp-action="CourseLessons" asp-controller="Lesson" asp-route-courseId="@test.Id">Course lessons</a></td>
+                        <td><a class="btn btn-sm btn-primary" asp-action="EditTest" asp-controller="Test" asp-route-testId="@test.Id">Modify</a></td>
+                        <td>
+                            <button onclick="deleteTest('@test.Id')" class="btn btn-sm btn-danger">Delete</button>
+                        </td>
+                    </tr>
+                }
+            </table>
+
+            <div class="text-center">
+                @await Html.PartialAsync("_Pages", Model)
+            </div>
+
+            @await Html.PartialAsync("_Modal", "Delete the selected test?")
+            @await Html.PartialAsync("_ValidationScriptsPartial")
+
+            @section Scripts {
+                <script>
+                    async function deleteTest(testId) {
+
+                        const btnYes = document.getElementById('btn-Yes');
+                        const btnNo = document.getElementById('btn-No');
+
+                        console.log(testId);
+                        $('#confirmModal').modal('show');
+
+                        btnYes.onclick = () => {
+                            const deleteItem = fetch(`/panel/delete-test/?testId=${testId}`, { method: 'DELETE' })
+                                .then(response => {
+                                    if (!response.ok) {
+                                        throw new Error('Network response was not ok');
+                                    }
+
+                                    document.querySelector("tr[data-rowid='" + testId + "']").remove();
+
+                                    $('#confirmModal').modal('hide');
+                                })
+                                .catch(error => {
+                                    console.error('There was a problem with the fetch operation:', error);
+
+                                });
+                        }
+
+                        btnNo.onclick = () => {
+                            $('#confirmModal').modal('hide');
+                        }
+                    }
+                </script>
+
+            }
+
+        </div>
+    </div>
+</main>  

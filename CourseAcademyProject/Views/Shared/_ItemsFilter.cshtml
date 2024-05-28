@@ -1,0 +1,259 @@
+﻿@using CourseAcademyProject.Interfaces
+@inject ICategory _categories;
+@{
+    List<Category> allCategories = (List<Category>)await _categories.GetAllCategoriesAsync();
+    int itemsPerColumn = 3; 
+    int columnsCount = (int)Math.Ceiling((double)allCategories.Count() / itemsPerColumn);
+    HttpRequest Request = ViewContext.HttpContext.Request;
+}
+}
+<section class="pt-4 text-center container">
+    <h1 class="fw-light pt-5 h5">Courses that everyone will like!</h1>
+
+    <nav class="navbar navbar-expand-lg">
+       
+         <div class="container-fluid">
+            <button class="navbar-toggler filter-button me-2 filter-btn"
+                    type="button"
+                    data-bs-toggle="offcanvas"
+                    data-bs-target="#offcanvasFilter"
+                    aria-controls="offcanvasFilter">
+                <i class="fa-solid fa-filter"></i> Filter
+            </button>
+            <div class="offcanvas offcanvas-start bg-white bg-opacity-75"
+                 tabindex="-1"
+                 id="offcanvasFilter"
+                 aria-labelledby="offcanvasFilterLabel">
+                <div class="offcanvas-header">
+                    <h3 class="offcanvas-title fw-bold text-primary"
+                        id="offcanvasFilterLabel">
+                        Filters
+                    </h3>
+                    <button type="button"
+                            class="btn-close btn-primary"
+                            data-bs-dismiss="offcanvas"
+                            aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body">
+                    <ul class="navbar-nav justify-content-lg-center justify-content-end text-start flex-grow-1">
+                        <li class="nav-item m-1">
+                            <button class="btn btn-secondary position-relative dropdown-toggle m-1"
+                                    type="button"
+                                    data-bs-toggle="dropdown"
+                                    data-bs-auto-close="true"
+                                    aria-expanded="false">
+                                Specialty
+                            </button>
+
+                         @*Categories *@
+                            <ul class="dropdown-menu custom-dropdown">
+                                <div class="row">
+                                    @for (int colIndex = 0; colIndex < columnsCount; colIndex++)
+                                    {
+                                        <div class="col">
+                                            @for (int i = colIndex * itemsPerColumn; i < Math.Min((colIndex + 1) * itemsPerColumn, allCategories.Count()); i++)
+                                            {
+                                        <li>
+                                            <a class="dropdown-item" href="@Url.Action("Courses", "Home",new Dictionary<string, object>
+                                            {
+                                                { "options.CategoryId", allCategories[i].Id },
+                                                { "options.DifficultyLevel", Request.Query["options.DifficultyLevel"] },
+                                                { "options.Price", Request.Query["options.Price"] },
+                                                { "options.DateOfPublication", Request.Query["options.DateOfPublication"] },
+                                                { "options.SearchTerm", Request.Query["options.SearchTerm"] },
+                                                { "options.SearchPropertyName", Request.Query["options.SearchPropertyName"] }
+                                            })"><img src="@allCategories[i].Image" alt="">@allCategories[i].Name</a>
+                                        </li>
+                                            }
+                                         </div>
+                                    }
+                                </div>
+                            </ul>
+                            @if (!string.IsNullOrEmpty(Request.Query["options.CategoryId"]))
+                            {
+                                bool res = int.TryParse(Request.Query["options.CategoryId"], out int num);
+                                    if (res)
+                                    {
+                                         <div class="chip mt-2 mt-lg-0">
+                                             @allCategories.FirstOrDefault(e => e.Id.Equals(num))?.Name
+                                             <span class="closebtn" onclick="removeParam('options.CategoryId')">&times;</span>
+                                         </div>
+                                    }
+                            }
+                        </li>
+
+            <li class="nav-item m-1">
+                <button class="btn btn-secondary position-relative dropdown-toggle m-1"
+                        type="button"
+                        data-bs-toggle="dropdown"
+                        data-bs-auto-close="true"
+                        aria-expanded="false">
+                    Difficulty level
+                </button>
+                <ul class="dropdown-menu">
+                    @foreach (var level in Enum.GetValues(typeof(DifficultyLevel)))
+                    {
+                        <li>
+                            <a class="dropdown-item" href="@Url.Action("Courses", "Home", new Dictionary<string, object>
+                            {
+                                { "options.DifficultyLevel", (int)level },
+                                { "options.CategoryId", Request.Query["options.CategoryId"] },
+                                { "options.Price", Request.Query["options.Price"] },
+                                { "options.DateOfPublication", Request.Query["options.DateOfPublication"] },
+                                { "options.SearchTerm", Request.Query["options.SearchTerm"] },
+                                { "options.SearchPropertyName", Request.Query["options.SearchPropertyName"] }
+                            })">@level</a>
+                        </li>
+                    }
+
+                </ul>
+                @if (!string.IsNullOrEmpty(Request.Query["options.DifficultyLevel"]))
+                {
+                       bool res = int.TryParse(Request.Query["options.DifficultyLevel"], out int num);
+                       if (res)
+                       {
+                            <div class="chip mt-2 mt-lg-0">
+                                @Enum.GetName(typeof(DifficultyLevel), num)
+                            <span class="closebtn" onclick="removeParam('options.DifficultyLevel')">&times;</span>
+                            </div>
+                       }
+                }
+            </li>
+            <li class="nav-item m-1">
+                <button class="btn btn-secondary position-relative dropdown-toggle m-1"
+                        type="button"
+                        data-bs-toggle="dropdown"
+                        data-bs-auto-close="true"
+                        aria-expanded="false">
+                    Sort by price
+                </button>
+                <ul class="dropdown-menu" id="priceDropdown">
+                    <li>
+                        <a class="dropdown-item" href="@Url.Action("Courses", "Home", new Dictionary<string, object>
+                        {
+                            { "options.Price", true },
+                            { "options.CategoryId", Request.Query["options.CategoryId"] },
+                            { "options.DifficultyLevel", Request.Query["options.DifficultyLevel"] },
+                            { "options.DateOfPublication", Request.Query["options.DateOfPublication"] },
+                            { "options.SearchTerm", Request.Query["options.SearchTerm"] },
+                            { "options.SearchPropertyName", Request.Query["options.SearchPropertyName"] }
+                        })">From free to paid</a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="@Url.Action("Courses", "Home", new Dictionary<string, object>
+                        {
+                            { "options.Price", false },
+                            { "options.CategoryId", Request.Query["options.CategoryId"] },
+                            { "options.DifficultyLevel", Request.Query["options.DifficultyLevel"] },
+                            { "options.DateOfPublication", Request.Query["options.DateOfPublication"] },
+                            { "options.SearchTerm", Request.Query["options.SearchTerm"] },
+                            { "options.SearchPropertyName", Request.Query["options.SearchPropertyName"] }
+                        })">From paid to free</a>
+                    </li>
+                </ul>
+                @if (!string.IsNullOrEmpty(Request.Query["options.Price"]))
+                {
+                    bool res = bool.TryParse(Request.Query["options.Price"], out bool val);
+                    if (res)
+                    {
+                         <div class="chip mt-2 mt-lg-0">
+                           @(val ? "free > paid" : "paid > free")
+                            <span class="closebtn" onclick="removeParam('options.Price')">&times;</span>
+                        </div>
+                    }    
+                }
+            </li>
+
+            <li class="nav-item m-1">
+                <button class="btn btn-secondary position-relative dropdown-toggle m-1"
+                        type="button"
+                        data-bs-toggle="dropdown"
+                        data-bs-auto-close="true"
+                        aria-expanded="false">
+                    Sort by date
+                </button>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a class="dropdown-item" href="@Url.Action("Courses", "Home", new Dictionary<string, object>
+                        {
+                            { "options.DateOfPublication", true },
+                            { "options.CategoryId", Request.Query["options.CategoryId"] },
+                            { "options.DifficultyLevel", Request.Query["options.DifficultyLevel"] },
+                            { "options.Price", Request.Query["options.Price"] },
+                            { "options.SearchTerm", Request.Query["options.SearchTerm"] },
+                            { "options.SearchPropertyName", Request.Query["options.SearchPropertyName"] }
+                        })">From new to old</a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="@Url.Action("Courses", "Home", new Dictionary<string, object>
+                        {
+                            { "options.DateOfPublication", false },
+                            { "options.CategoryId", Request.Query["options.CategoryId"] },
+                            { "options.DifficultyLevel", Request.Query["options.DifficultyLevel"] },
+                            { "options.Price", Request.Query["options.Price"] },
+                            { "options.SearchTerm", Request.Query["options.SearchTerm"] },
+                            { "options.SearchPropertyName", Request.Query["options.SearchPropertyName"] }
+                        })">From old to new</a>
+                    </li>
+                </ul>
+                @if (!string.IsNullOrEmpty(Request.Query["options.DateOfPublication"]))
+                {
+                    bool res = bool.TryParse(Request.Query["options.DateOfPublication"], out bool val);
+                    if (res)
+                    {
+                        <div class="chip mt-2 mt-lg-0">
+                            @(val ? "new > old" : "old > new")
+                            <span class="closebtn" onclick="removeParam('options.Price')">&times;</span>
+                        </div>
+                    }
+                }
+            </li>
+       
+            <li class="nav-item m-1">
+                <a asp-action="Courses" asp-controller="Home" class="btn btn-secondary m-1 @(!Request.Query.Any() ? "disabled" : "")">Reset</a>
+            </li>
+            </ul>
+        </div>
+    
+        </div>
+        <form method="get" asp-action="Courses" asp-controller="Home" class="d-flex search-form">
+            <input class="form-control me-2"
+                   type="text"
+                   value="@Request.Query["options.SearchTerm"]" 
+                   name="options.SearchTerm"
+                   placeholder="Search"
+                   aria-label="Search" />
+            <input type="hidden" name="options.SearchPropertyName" value="Name" />
+            @if (Request.Query.ContainsKey("options.CategoryId"))
+            {
+            <input type="hidden" name="options.CategoryId" value="@Request.Query["options.CategoryId"]" />
+            }
+            @if (Request.Query.ContainsKey("options.DifficultyLevel"))
+            {
+            <input type="hidden" name="options.DifficultyLevel" value="@Request.Query["options.DifficultyLevel"]" />
+            }
+            @if (Request.Query.ContainsKey("options.Price"))
+            {
+            <input type="hidden" name="options.Price" value="@Request.Query["options.Price"]" />
+            }
+            @if (Request.Query.ContainsKey("options.DateOfPublication"))
+            {
+            <input type="hidden" name="options.DateOfPublication" value="@Request.Query["options.DateOfPublication"]" />
+            }
+            <button class="btn btn-outline-primary" type="submit">
+                Search
+            </button>
+        </form>
+        </div>
+    </nav>
+</section>
+
+
+
+<script>
+    function removeParam(parameter) {
+        var url = new URL(window.location.href);
+        url.searchParams.delete(parameter);
+        window.location.href = url.toString();
+    }
+</script>

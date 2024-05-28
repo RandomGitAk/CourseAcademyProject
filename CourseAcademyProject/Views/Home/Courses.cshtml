@@ -1,0 +1,22 @@
+﻿@{
+    ViewData["Title"] = "Courses";
+}
+@model IEnumerable<Course>
+@await Html.PartialAsync("_ItemsFilter")
+<div id="pageform" class="album pt-5 bg-light">
+    <div class="container">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+
+            @foreach (Course course in Model)
+            {
+                @await Html.PartialAsync("_Course",course);
+            }
+        </div>
+    </div>
+    <div class="container d-flex justify-content-center mt-4">
+        <div class="text-center">
+            @await Html.PartialAsync("_Pages", Model)
+        </div>
+    </div>
+</div>
+@await Html.PartialAsync("_FooterPartial")

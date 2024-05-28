@@ -1,0 +1,67 @@
+﻿@using CourseAcademyProject.ViewModels
+@model RegViewModel
+<section class="vh-100">
+    <div class="container h-custom">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col-md-9 col-lg-6 col-xl-5">
+                <img src="assets/img/regLogo.png"
+                     class="img-fluid mt-5 mt-lg-0" alt="Sample image">
+            </div>
+            <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
+                <form asp-action="Registration" asp-controller="Account" method="post">
+                    <div asp-validation-summary="ModelOnly"></div>
+                    <div class="divider d-flex align-items-center my-4">
+                        <p class="text-center fw-bold mx-3 mb-0">Sign up</p>
+                    </div>
+
+                    <div class="form-outline mb-4">
+                        <input asp-for="FirstName" class="form-control form-control-lg" />
+                        <label asp-for="FirstName" class="form-label"></label>
+                        <span asp-validation-for="FirstName" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-outline mb-4">
+                        <input asp-for="LastName" class="form-control form-control-lg" />
+                        <label asp-for="LastName" class="form-label"></label>
+                        <span asp-validation-for="LastName" class="text-danger"></span>
+                    </div>
+
+                    <!-- Email input -->
+                    <div class="form-outline mb-4">
+                        <input asp-for="Email" class="form-control form-control-lg" />
+                        <label asp-for="Email" class="form-label"></label>
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+             
+                    <!-- Password input -->
+                    <div class="form-outline mb-3">
+                        <input asp-for="Password" class="form-control form-control-lg" />
+                        <label asp-for="Password" class="form-label"></label>
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-outline mb-3">
+                        <input asp-for="PasswordConfirm" class="form-control form-control-lg" />
+                        <label asp-for="PasswordConfirm" class="form-label"></label>
+                        <span asp-validation-for="PasswordConfirm" class="text-danger"></span>
+                    </div>
+
+                    <div class="text-center text-lg-start mt-4 pt-2">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-primary btn-lg"
+                                style="padding-left: 2.5rem; padding-right: 2.5rem;">
+                            Sign up
+                        </button>
+                        <p class="small fw-bold mt-2 pt-1 mb-0">
+                            Do you have an account? 
+                            <a asp-action="Login" asp-controller="Account" class="link-danger">Sign in</a>
+                        </p>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+</section>
+@await Html.PartialAsync("_ValidationScriptsPartial")

@@ -1,0 +1,58 @@
+﻿@model Course
+<div class="container bootdey">
+    <div class="col-md-12 bootstrap snippets">
+        <div class="panel" id="commentForm">
+            <form asp-action="AddComment" asp-controller="Home" method="post" asp-antiforgery="true">
+            <div class="panel-body">
+                <textarea class="form-control"
+                          name="content"
+                          rows="2"
+                          placeholder="What are you thinking?"></textarea>
+                <div class="mar-top clearfix">
+                        <button class="btn btn-sm btn-primary pull-right" @(User.Identity.IsAuthenticated ? "" : "disabled")
+                            type="submit">
+                        <i class="fa fa-pencil fa-fw"></i> Share
+                    </button>
+                </div>
+            </div>
+            <input type="hidden" name="userName" value="@User.Identity.Name" />
+            <input type="hidden" name="courseId" value="@Model.Id" />
+                <input type="hidden" id="parentId" name="parentCommentId" value="" />
+            </form>
+        </div>
+        <div class="panel">
+            <div class="panel-body">
+               @(Model.Comments.Count() == 0 ? "Comments: 0" : "")
+                <!-- Newsfeed Content -->
+                <!--===================================================-->
+                @foreach (var comment in Model.Comments)
+                {
+
+                    <div class="media-block  @(comment.ParentCommentId != null ? "ps-5" : "")" id="comment_@comment.Id">
+                            <img class="media-left rounded-circle img-sm me-2"
+                                 alt="Profile Picture"
+                                 src="https://bootdey.com/img/Content/avatar/avatar1.png" />
+                            <div class="media-body">
+                                <div class="mar-btm">
+                                    <p class="text-primary fw-semibold">@comment.User.FirstName @comment.User.LastName </p>
+                                    <p class="text-muted text-sm">
+                                    <i class="fa-regular fa-clock"></i> - @comment.DateOfPublication 
+                                    <button class="btn btn-sm btn-default btn-hover-primary border ms-1"
+                                        onclick="setCommentIdInInputAndReplacePlaceholdeAndScroll('@comment.Id','@comment.User.FirstName @comment.User.LastName');">
+                                        Comment <i class="fa-solid fa-reply"></i>
+                                    </button>
+                                    </p>
+
+                                </div>
+                                <p>
+                                @comment.Content
+                                </p>
+                                <hr />
+                            </div>
+                </div>
+
+                }
+            </div>
+        </div>
+    </div>
+</div>

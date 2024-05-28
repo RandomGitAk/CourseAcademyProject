@@ -1,0 +1,102 @@
+﻿@using CourseAcademyProject.ViewModels.Test
+@{
+    Layout = "~/Views/Panel/_PanelLayout.cshtml";
+    ViewData["Title"] = "Edit test";
+}
+@model TestWithQuestionAndAnswer
+<main class="content px-3 py-2">
+    <div class="mb-3">
+        <h4>Сontrol panel</h4>
+    </div>
+
+    <div class="col">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a asp-action="Index" asp-controller="Panel" class="text-decoration-none">Course elements</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a asp-action="Tests" asp-controller="Test" class="text-decoration-none"> Tests</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">
+                   Edit test
+                </li>
+            </ol>
+        </nav>
+    </div>
+
+    <div class="container">
+
+        <div class="row justify-content-center">
+            <div class="col-sm-6">
+                <div class="well mt-5">
+                    <form asp-action="EditTest" asp-controller="Test" method="post" enctype="multipart/form-data">
+                        <div asp-validation-summary="All" class="text-danger"></div>
+
+                        <input type="hidden" asp-for="Id" />
+
+                        <div class="form-group">
+                            <label asp-for="AllCourses" class="control-label">Courses</label>
+                            @Html.DropDownListFor(e => e.CourseId, Model.AllCourses, new { @class = "form-control" })
+
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Title" class="control-label"></label><span class="text-danger">*</span>
+                            <input type="text" asp-for="Title" class="form-control" />
+                            <span asp-validation-for="Title" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Description" class="control-label"></label><span class="text-danger">*</span>
+                            <textarea asp-for="Description" class="form-control"></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                        <div class="form-group mt-2">
+                            <label asp-for="TimeToPass" class="control-label"></label><span class="text-danger">*</span>
+                            <input type="time" asp-for="TimeToPass" />
+                            <span asp-validation-for="TimeToPass" class="text-danger"></span>
+                        </div>
+
+                        @for (int i = 0; i < Model.Questions.Count; i++)
+                        {
+                            <div class="question">
+                                <h3>Question @(i + 1)</h3>
+                                <input type="hidden" asp-for="Questions[i].Id" />
+                                <input type="hidden" asp-for="Questions[i].TestId" />
+                                <div class="form-group">
+                                    <label asp-for="Questions[i].Content">Content</label>
+                                    <input type="text" asp-for="Questions[i].Content" class="form-control" />
+                                </div>
+
+                                @for (int j = 0; j < Model.Questions[i].Answers.Count; j++)
+                                {
+                                    <div class="form-group">
+                                        <input type="hidden" asp-for="Questions[i].Answers[j].Id" />
+                                        <input type="hidden" asp-for="Questions[i].Answers[j].QuestionId" />
+                                        <label asp-for="Questions[i].Answers[j].Content">Answer @(j + 1)</label>
+                                        @if (Model.Questions[i].Answers[j].IsCorrect)
+                                        {
+                                            <label class="form-check-label">Is Correct</label>
+                                            <input type="checkbox" asp-for="Questions[i].Answers[j].IsCorrect" class="form-check-input" value="true" disabled />
+                                            <input type="hidden" asp-for="Questions[i].Answers[j].IsCorrect" value="true" />
+                                        }
+                                        <input type="text" asp-for="Questions[i].Answers[j].Content" class="form-control" />
+                                    </div>
+                                }
+                              
+
+                            </div>
+                        }
+
+                        <br />
+                        <div class="form-group">
+                            @Html.AntiForgeryToken()
+                            <input type="submit" value="Save" class="btn btn-primary float-sm-end" />
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>

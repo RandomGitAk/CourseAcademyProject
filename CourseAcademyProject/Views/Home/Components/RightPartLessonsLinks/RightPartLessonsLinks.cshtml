@@ -1,0 +1,32 @@
+﻿@using CourseAcademyProject.ViewModels
+@model LessonsWithCurrentLessonViewModel
+
+<div class="col-lg-3 my-lg-3">
+    <div class="component right-component">
+        <p class="fst-italic mt-3">Other topics</p>
+        <ul class="list-unstyled ps-3">
+            @foreach (var lesson in Model.Lessons)
+            {
+                <li>
+                    <a asp-action="Lesson" asp-controller="Home" asp-route-lessonId="@lesson.Id" class="decoration-when-hover">@lesson.Title</a>
+                </li>
+            }
+        </ul>
+        <p class="fst-italic mt-3">Additionally</p>
+        <ul class="list-unstyled ps-3">
+            <li>
+                <a href="@Model.Lesson.MaterialsUrl" class="decoration-when-hover">Source link</a>
+            </li>
+            <li>
+                <a href="https://github.com/RandomGitAk?tab=repositories" class="decoration-when-hover">GitHub</a>
+            </li>
+            <li>
+                <a class="decoration-when-hover">admin@gmail.com</a>
+            </li>
+        </ul>
+        <p class="fst-italic mt-3">File with the lesson</p>
+        <div class="p-4 mb-3 bg-light rounded centered text-center">
+            <a class="btn btn-primary" href="@Url.Action("DownloadLessonFile", "Home", new { lessonId = Model.Lesson.Id })">Download File</a>
+        </div>
+    </div>
+</div>

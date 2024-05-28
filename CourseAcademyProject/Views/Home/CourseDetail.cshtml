@@ -1,0 +1,256 @@
+﻿@{
+    ViewData["Title"] = "Course Detail";
+    string[] hoursAndMinutes = Model.Hourpassed.Split(":");
+    string hourPased = hoursAndMinutes[0];
+    string minutePased = hoursAndMinutes[1];
+    bool isUserInCourse = Model.CoursesUser.Any(e => e.User.Email == User.Identity.Name);
+}
+@model Course
+<section class="pt-5 container">
+    <div class="row pt-4">
+        <div class="col-lg-9">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a asp-action="Index" asp-controller="Home" class="text-decoration-none">Home</a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a asp-action="Courses" asp-controller="Home" class="text-decoration-none">Courses</a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">
+                        Course Details
+                    </li>
+                </ol>
+            </nav>
+            <h1 class="h3 fw-bolder">@Model.Name</h1>
+            <div class="about-course py-3">
+                <h5 class="text-info">About course</h5>
+                <p>
+                   @Model.AboutCourse
+                </p>
+                <h5 class="text-info">Prerequisites</h5>
+                <p>
+                   @Model.Prerequisites
+                </p>
+                <h5 class="text-info">What you'll learn</h5>
+                <p>
+                @Model.YoullLearn
+                </p>
+                @* <ol class="list-group">
+                    <li class="list-group-item list-group-item-action border border-0">
+                        A list item
+                    </li>
+                    <li class="list-group-item list-group-item-action border border-0">
+                        A list item
+                    </li>
+                    <li class="list-group-item list-group-item-action border border-0">
+                        A list item
+                    </li>
+                </ol> *@
+                <h5 class="text-info">Tests</h5>
+                @if (isUserInCourse)
+                {
+                    <p>
+                        <a asp-action="GetCourseTests" asp-controller="UserTest" asp-route-courseId="@Model.Id" class="btn btn-primary">Go to tests</a>
+                    </p>
+                }
+                else
+                {
+                    <p class="text-danger">
+                        Sign up for the course to take the test!
+                    </p>
+                }
+
+             
+            </div>
+        </div>
+        <div class="col-lg-3 border border-secondary-subtle rounded course-info-left bg-light">
+            <img src="@Model.Image"
+                 alt="cNews"
+                 class="img-fluid rounded-top"
+                 height="185px" />
+                @if (!isUserInCourse)
+                {
+                    @if (Model.Discount is not null)
+                    {
+                        <div class="course-price my-3 fs-3 fw-bold ps-3">
+                            $@(Model.Price - Model.Discount)
+                            <small class="text-decoration-line-through text-danger fs-6">
+                                $@Model.Price
+                            </small>
+                            <p class="fs-6 fw-light text-danger">
+                                <i class="fa-regular fa-clock"></i> @Model.DaysDiscount @(Model.DaysDiscount > 1 ? "days" : "day") left at this price!
+                            </p>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="course-price my-3 fs-3 fw-bold ps-3">
+                            @(Model.Price is null ? "Free" : $"${Model.Price}")
+                         </div>
+                    }
+                }
+                else
+                {
+                    <div class="course-price my-3 fw-bold ps-3 text-success">
+                    <i class="fa-regular fa-circle-check" style="color: #63E6BE;"></i> Course in the library
+                    </div>
+                }
+
+           
+            <hr />
+            <div class="in-course">
+                <h6 class="ps-3 mb-4">This course includes:</h6>
+
+                <ul class="list-unstyled ps-3">
+                    <li class="mb-2">
+                        <i class="fa-regular fa-clock">
+                            <span class="regular-text pe-2">
+                                Hour passed @hourPased h  @minutePased m
+                            </span>
+                        </i>
+                    </li>
+                    <li class="mb-2">
+                        <i class="fa-solid fa-book"></i> @Model.Lessons?.Count() articles
+                    </li>
+                    <li class="mb-2">
+                        <i class="fa-solid fa-globe"></i> Language: @Model.Language
+                    </li>
+                    <li class="mb-2">
+                        <i class="fa-solid fa-magnifying-glass-chart"></i> Testing
+                    </li>
+                    <li class="mb-2">
+                        <i class="fa-solid fa-house-laptop"></i> Homework
+                    </li>
+                </ul>
+            </div>
+            <div class="d-flex justify-content-center mb-2">
+                @if (!User.Identity.IsAuthenticated)
+                {
+                    <p class="text-danger">Log in to add course!</p>
+                }
+                else
+                {
+                    @if (Model.PriceId is not null && !isUserInCourse)
+                    {
+                        <form asp-action="CreateCheckout" asp-controller="Payment" method="POST">
+                            <input type="hidden" name="priceId" value="@Model.PriceId" />
+                            <input type="hidden" name="courseId" value="@Model.Id" />
+                            <button type="submit" id="checkout-button" class="btn btn-primary">Buy now</button>
+                        </form>
+                    }
+                    @if (Model.PriceId is null && !isUserInCourse)
+                    {
+                        <form asp-action="SignUpUserToFreeCourse" asp-controller="Payment" method="POST">
+                            <input type="hidden" name="courseId" value="@Model.Id" />
+                            <button type="submit" class="btn btn-primary">Sign up</button>
+                        </form>
+                    }
+                }
+               
+            </div>
+        </div>
+        <div class="video-list-courses py-5">
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="ratio ratio-16x9">
+                        <iframe width="560" height="315" src="@Model.VideoUrl" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                        <iframe width="560"
+                                height="315"
+                                src="@Model.VideoUrl"
+                                title="YouTube video player"
+                                frameborder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                allowfullscreen></iframe>
+                    </div>
+                </div>
+                <div class="col-lg-4 mt-3 mt-lg-0 right-list-courses">
+                    <div class="overflow-auto scroll-lesons">
+                        <ul class="list-unstyled">
+                            @foreach (var lesson in Model.Lessons)
+                            {
+                                <li>
+                                    <div class="card py-3 m-2 text-center bg-light">
+                                        @if (Model.CoursesUser.Any(e => e.User.Email == User.Identity.Name))
+                                        {
+                                            <a asp-action="Lesson" asp-controller="Home" asp-route-lessonId="@lesson.Id" class="text-decoration-none">
+                                                @lesson.Title
+                                            </a>
+                                        }else
+                                        {
+                                            <a id="testsLink" class="text-decoration-none text-muted" asp-action="GetCourseTests" asp-controller="UserTest"
+                                               asp-route-courseId="@Model.Id" title="You need to sign up for the course">@lesson.Title</a>
+                                        }
+
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @await Html.PartialAsync("_Comments",Model)
+</section>
+@await Html.PartialAsync("_FooterPartial")
+
+@* script for comments *@
+@section Scripts {
+    <script>
+
+        function setCommentIdInInputAndReplacePlaceholdeAndScroll(commentId, userFullName) {
+            setParentCommentId(commentId);
+            getUserNameAndReplacePlaceholder(userFullName);
+            scrollToCommentForm();
+        }
+
+        function setParentCommentId(commentId) {
+            document.getElementById("parentId").value = commentId;
+        }
+
+
+        function scrollToCommentForm() {
+            var commentForm = document.getElementById("commentForm");
+            if (commentForm) {
+                var offset = 100;
+                var topPos = commentForm.getBoundingClientRect().top + window.pageYOffset - offset;
+                window.scrollTo({
+                    top: topPos,
+                    behavior: "smooth"
+                });
+            }
+        }
+
+        function getUserNameAndReplacePlaceholder(userFullName) {
+            var textareaElement = document.querySelector('textarea[name="content"]');
+            textareaElement.value = userFullName + ',';
+        }
+
+        //admin found comment
+        var urlParams = new URLSearchParams(window.location.search);
+        var commentId = urlParams.get('commentId');
+        if (commentId) {
+            scrollToComment(commentId);
+        }
+        
+        function scrollToComment(commentId, courseId) {
+            var commentElement = document.getElementById('comment_' + commentId);
+
+            if (commentElement) {
+                var offset = 100;
+                var topPos = commentElement.getBoundingClientRect().top + window.pageYOffset - offset;
+                window.scrollTo({
+                    top: topPos,
+                    behavior: "smooth"
+                });
+            }
+        }
+    </script>
+    <script>
+        document.getElementById("testsLink").addEventListener("click", function (event) {
+            event.preventDefault(); //Canceling the standard link action
+        });
+    </script>
+}

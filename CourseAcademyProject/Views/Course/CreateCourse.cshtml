@@ -1,0 +1,138 @@
+﻿@using CourseAcademyProject.ViewModels
+@{
+    Layout = "~/Views/Panel/_PanelLayout.cshtml";
+    ViewData["Title"] = "Create course";
+}
+@model CourseViewModel
+<main class="content px-3 py-2">
+    <div class="mb-3">
+        <h4>Сontrol panel</h4>
+    </div>
+
+    <div class="col">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a asp-action="Index" asp-controller="Panel" class="text-decoration-none">Course elements</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a asp-action="Courses" asp-controller="Course" class="text-decoration-none"> Courses</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">
+                    Create course
+                </li>
+            </ol>
+        </nav>
+    </div>
+
+    <div class="container">
+
+        <div class="row justify-content-center">
+            <div class="col-sm-6">
+                <div class="well mt-5">
+                    <form asp-action="CreateCourse" asp-controller="Course" method="post" enctype="multipart/form-data">
+                        <div asp-validation-summary="All" class="text-danger"></div>
+
+                        <div class="form-group">
+                            <label asp-for="Name" class="control-label"></label><span class="text-danger">*</span>
+                            <input type="text" asp-for="Name" class="form-control"/>
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="AboutCourse" class="control-label"></label><span class="text-danger">*</span>
+                            <textarea asp-for="AboutCourse" class="form-control"></textarea>
+                            <span asp-validation-for="AboutCourse" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Prerequisites" class="control-label"></label><span class="text-danger">*</span>
+                            <textarea asp-for="Prerequisites" class="form-control"></textarea>
+                            <span asp-validation-for="Prerequisites" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="YoullLearn" class="control-label"></label><span class="text-danger">*</span>
+                            <textarea asp-for="YoullLearn" class="form-control"></textarea>
+                            <span asp-validation-for="YoullLearn" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="DifficultyLevel" class="control-label"></label>
+                            @Html.DropDownList("DifficultyLevel", Html.GetEnumSelectList(typeof(DifficultyLevel)), new { @class = "form-control" })
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="AllCategories" class="control-label">Categories</label>
+                            @Html.DropDownListFor(e => e.CategoryId, Model.AllCategories, new { @class = "form-control" })
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="File" class="control-label"></label>
+                            <input type="file" class="form-control" asp-for="File" accept="image/*" />
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Price" class="control-label"></label>
+                            <input type="text" asp-for="Price" class="form-control" />
+                            <span asp-validation-for="Price" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="PriceId" class="control-label"></label>
+                            <input type="text" asp-for="PriceId" class="form-control" />
+                            <span asp-validation-for="PriceId" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Discount" class="control-label"></label>
+                            <input type="text" asp-for="Discount" class="form-control" />
+                            <span asp-validation-for="Discount" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="DaysDiscount" class="control-label"></label>
+                            <input type="text" asp-for="DaysDiscount" class="form-control" />
+                            <span asp-validation-for="DaysDiscount" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Language" class="control-label"></label><span class="text-danger">*</span>
+                            <input type="text" asp-for="Language" class="form-control" />
+                            <span asp-validation-for="Language" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Hourpassed" class="control-label"></label><span class="text-danger">*</span>
+                            <input type="text" asp-for="Hourpassed" class="form-control" />
+                            <span asp-validation-for="Hourpassed" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="VideoUrl" class="control-label"></label><span class="text-danger">*</span>
+                            <input type="text" asp-for="VideoUrl" class="form-control" />
+                            <span asp-validation-for="VideoUrl" class="text-danger"></span>
+                        </div>
+                        <br />
+                        <div class="form-group">
+                            @Html.AntiForgeryToken()
+                            <input type="submit" value="Save" class="btn btn-primary" />
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+    <script>
+
+        $.validator.methods.range = function (value, element, param) {
+            var globalizedValue = value.replace(",", ".");
+            return this.optional(element) || (globalizedValue >= param[0] && globalizedValue <= param[1]);
+        }
+
+        $.validator.methods.number = function (value, element) {
+            return this.optional(element) || /^-?(?:\d+|\d{1,3}(?:[\s\.,]\d{3})+)(?:[\.,]\d+)?$/.test(value);
+        }
+    </script>
+}

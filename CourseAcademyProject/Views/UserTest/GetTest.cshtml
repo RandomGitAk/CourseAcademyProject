@@ -1,0 +1,101 @@
+﻿@using CourseAcademyProject.Models.Test
+@model Test
+@{
+    ViewData["Title"] = "Test";
+    List<Question> questions = Model.Questions.ToList();
+
+}
+<section class="mt-5 container">
+    <div class="row pt-4 px-2 bg-white">
+        <h1 class="h5">@Model.Title</h1>
+        <hr class="my-4">
+
+        <div class="col-6">
+            <p class="lh-base">@Model.Description</p>
+        </div>
+        <div class="col-6 text-lg-end">
+            <input class="btn btn-white fw-500 shadow my-2 disable-input" id="timespent" type="text" name="SpendTime" value="@Model.TimeToPass" readonly>
+        </div>
+
+        <hr class="my-4">
+
+        <form id="testForm" asp-action="PassTest" asp-controller="UserTest" method="post" enctype="multipart/form-data">
+           <div asp-validation-summary="All" class="text-danger"></div>
+       
+        @for (int i = 0; i < questions.Count; i++)
+        {
+            <input type="hidden" name="QuestionAnswers[@i].QuestionId" value="@questions[i].Id">
+            <h5>@questions[i].Content</h5>
+            <p><span>Question #@(i + 1)</span><br></p>
+            <div class="p-5 mb-4 bg-light rounded-3 disable">
+                @{
+                    int answerCounter = 0;
+                }
+                    @foreach (var answer in questions[i].Answers)
+                    {
+                        if (answerCounter % 2 == 0)
+                        {
+                            @:<div class="row">
+                        }
+                        <div class="col-md-6">
+                            <div class="form-check form-check-inline)">
+                                <input class="form-check-input" type="radio" name="QuestionAnswers[@i].SelectedAnswerId" value="@answer.Id">
+                                <label class="form-check-label" for="QuestionAnswers[@i].SelectedAnswerId">@answer.Content</label>
+                            </div>
+                        </div>
+
+                         if (answerCounter % 2 != 0 || answerCounter == questions[i].Answers.Count() - 1)
+                        {
+                           @:</div>
+                        }
+
+                        {
+                          answerCounter++;
+                        }
+                    }
+
+            </div>
+        }
+            <br />
+            <div class="form-group">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="TestId" value="@Model.Id" />
+                <input type="hidden" id="CompletionTime" name="CompletionTime" value="">
+                <input type="submit" id="testForm" value="Сomplete" class="btn btn-primary d-block mx-auto mb-3" />
+            </div>
+        </form>
+    </div>
+</section>
+
+ @section Scripts{
+    <script>
+    var timeLeft = "@Model.TimeToPass"; 
+    var timer = setInterval(function() {
+        var parts = timeLeft.split(':');
+        var minutes = parseInt(parts[0], 10);
+        var seconds = parseInt(parts[1], 10);
+        if (minutes === 0 && seconds === 0) {
+            clearInterval(timer);
+            document.getElementById('testForm').submit(); // Submit the form if the time has expired
+        } else {
+            if (seconds === 0) {
+                minutes--;
+                seconds = 59;
+            } else {
+                seconds--;
+            }
+            timeLeft = (minutes < 10 ? '0' : '') + minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+            document.getElementById('timespent').value = timeLeft; // Refresh the time display
+            document.getElementById('CompletionTime').value = timeLeft;
+        }
+    }, 1000);
+
+    // Event handler for submitting a form by clicking on the "Submit Test" button
+    document.getElementById('submitTest').addEventListener('click', function() {
+        clearInterval(timer); // Stop the timer before submitting the form
+        
+        document.getElementById('testForm').submit(); // Submit the form
+    });
+</script>
+
+ }

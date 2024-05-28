@@ -1,0 +1,134 @@
+﻿@using CourseAcademyProject.ViewModels.Test
+@{
+    Layout = "~/Views/Panel/_PanelLayout.cshtml";
+    ViewData["Title"] = "Create test";
+}
+@model TestWithQuestionAndAnswer
+<main class="content px-3 py-2">
+    <div class="mb-3">
+        <h4>Сontrol panel</h4>
+    </div>
+
+    <div class="col">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a asp-action="Index" asp-controller="Panel" class="text-decoration-none">Course elements</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a asp-action="Tests" asp-controller="Test" class="text-decoration-none">  Tests</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">
+                    Create tests
+                </li>
+            </ol>
+        </nav>
+    </div>
+
+    <div class="container">
+
+        <div class="row justify-content-center">
+            <div class="col-sm-6">
+                <div class="well mt-5">
+                    <form asp-action="CreateTest" asp-controller="Test" method="post" enctype="multipart/form-data">
+                        <div asp-validation-summary="All" class="text-danger"></div>
+
+                        <div class="form-group">
+                            <label asp-for="AllCourses" class="control-label">Courses</label>
+                            @Html.DropDownListFor(e => e.CourseId, Model.AllCourses, new { @class = "form-control" })
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Title" class="control-label"></label><span class="text-danger">*</span>
+                            <input type="text" asp-for="Title" class="form-control" />
+                            <span asp-validation-for="Title" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Description" class="control-label"></label><span class="text-danger">*</span>
+                            <textarea asp-for="Description" class="form-control"></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                        <div class="form-group mt-2">
+                            <label asp-for="TimeToPass" class="control-label"></label><span class="text-danger">*</span>
+                            <input type="time" id="time" name="TimeToPass" />
+                            <span asp-validation-for="TimeToPass" class="text-danger"></span>
+                        </div>
+
+                        <div id="questionsContainer">
+                            <!-- Here will be dynamically added questions -->
+                        </div>
+
+                        <button type="button" id="addQuestionBtn" class="btn btn-success mt-3">Add Question</button>
+                      
+                        <br />
+                        <div class="form-group">
+                            @Html.AntiForgeryToken()
+                            <input type="submit" value="Save" class="btn btn-primary float-sm-end" />
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+@section Scripts{
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.getElementById("addQuestionBtn").addEventListener("click", function () {
+                addQuestion();
+            });
+        });
+
+        function addQuestion() {
+            var container = document.getElementById("questionsContainer");
+            var questionIndex = container.children.length;
+
+            var questionHtml = `
+                        <div class="question">
+                            <h3>Question ${questionIndex + 1}</h3>    <button type="button" class="btn btn-danger mt-3" onclick="removeQuestion(this)">Remove</button>
+                            <div class="form-group">
+                                <label for="Questions_${questionIndex}__Content">Content</label>
+                                <input type="text" id="Questions_${questionIndex}__Content" name="Questions[${questionIndex}].Content" class="form-control" />
+                            </div>
+
+                           <div class="form-group">
+                            <label>Answers</label>
+                        <div>
+                       
+                            <input type="radio" id="Questions_${questionIndex}__Answers_0__IsCorrect" name="Questions[${questionIndex}].Answers[0].IsCorrect" value="true" checked/>
+                            <label for="Questions_${questionIndex}__Answers_0__Content">Option 1 Enter the correct answer here</label>
+                            <input type="text" id="Questions_${questionIndex}__Answers_0__Content" name="Questions[${questionIndex}].Answers[0].Content" class="form-control" />
+                        </div>
+                        <div>
+                            <label for="Questions_${questionIndex}__Answers_1__Content">Option 2</label>
+                            <input type="text" id="Questions_${questionIndex}__Answers_1__Content" name="Questions[${questionIndex}].Answers[1].Content" class="form-control" />
+                        </div>
+                        <div>
+
+                            <label for="Questions_${questionIndex}__Answers_2__Content">Option 3</label>
+                            <input type="text" id="Questions_${questionIndex}__Answers_2__Content" name="Questions[${questionIndex}].Answers[2].Content" class="form-control" />
+                        </div>
+                        <div>
+
+                            <label for="Questions_${questionIndex}__Answers_3__Content">Option 4</label>
+                            <input type="text" id="Questions_${questionIndex}__Answers_3__Content" name="Questions[${questionIndex}].Answers[3].Content" class="form-control" />
+                        </div>
+                         </div>
+
+                        </div>
+                    `;
+
+            container.insertAdjacentHTML("beforeend", questionHtml);
+
+            var previousQuestion = container.children[questionIndex - 1];
+            if (previousQuestion) {
+                previousQuestion.querySelector(".btn-danger").style.display = "none";
+            }
+        }
+        function removeQuestion(button) {
+            var questionDiv = button.parentNode;
+            questionDiv.parentNode.removeChild(questionDiv);
+        }
+    </script>
+}

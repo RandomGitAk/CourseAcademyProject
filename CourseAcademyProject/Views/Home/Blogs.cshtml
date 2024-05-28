@@ -1,0 +1,65 @@
+﻿@model IEnumerable<Blog>
+@{
+    ViewData["Title"] = "Blogs";
+}
+<div class="container my-5 bg-light">
+    <div class="row mt-5">
+        <div class="col">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a asp-action="Index" asp-controller="Home" class="text-decoration-none">Home</a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">
+                        Blogs
+                    </li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+    <form method="get" asp-action="Blogs" asp-controller="Home" class="d-flex search-form">
+    <div class="input-group input-group-lg mb-5">
+       
+            <input class="form-control input-search-mobile" type="text"
+            value="@ViewContext.HttpContext.Request.Query["options.SearchTerm"]"
+            name="options.SearchTerm" placeholder="Enter the title of the blog...">
+            <input type="hidden" name="options.SearchPropertyName" value="Name" />
+            <button class="btn btn-primary animated--fade-in-up" type="submit">Search</button>
+   
+    </div>
+      </form>
+    @foreach (var blog in Model)
+    {
+        <hr class="my-4">
+         <div class="card card-blog-news my-5">
+            <div class="card-header d-flex justify-content-between">
+                <div class="me-2 text-dark">
+                    @blog.Name
+                    <div class="text-xs text-muted">@blog.DateOfPublication</div>
+                </div>
+                <a asp-action="Blog" asp-controller="Home" asp-route-blogId="@blog.Id">#@blog.Id</a>
+            </div>
+            <div class="card-body">
+                <img src="@blog.Image" class="img-fluid mx-auto d-block mb-3" style="max-width: 600px; max-height: 600px; width: 100%;" alt="Blog Image">
+                <br/>
+                <div class="text-center fs-5">
+                    @blog.MiniDescription
+                    <p><a asp-action="Blog" asp-controller="Home" asp-route-blogId="@blog.Id" class="fs-6">Read more</a></p>
+                </div>
+                
+            </div>
+            <div class="card-header d-flex justify-content-between">
+                <p class="mb-0 small">
+                    Автор: admin@gmail.com
+                </p>
+            </div>
+         </div>
+         
+    }
+    <div class="container d-flex justify-content-center my-2">
+        <div class="text-center">
+            @await Html.PartialAsync("_Pages", Model)
+        </div>
+    </div>
+</div>
+@await Html.PartialAsync("_FooterPartial")

@@ -1,0 +1,31 @@
+﻿@model Course
+<div class="col">
+    <a asp-action="CourseDetail" asp-controller="Home" asp-route-courseId="@Model.Id"
+       asp-route-returnUrl="@ViewContext.HttpContext.Request.PathAndQuery()">
+        <div class="card custom-card shadow-sm">
+            <img src="@Model.Image"
+                 class="card-img-top"
+                 alt="@Model.Name"
+                 title="@Model.Name"/>
+
+            <div class="card-body">
+                <h6 class="fw-bold fs-5">
+                    @Model.Name
+                </h6>
+                <p class="card-text">
+                   @Model.AboutCourse
+                </p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="col-6">
+                        <i class="fa-regular fa-clock"><span class="regular-text pe-2"> @Model.Hourpassed</span></i>
+                        <i class="fa-regular fa-circle-play"><span class="regular-text"> @(Model?.Lessons?.Count() ?? 0) 
+                            @(Model?.Lessons?.Count() > 1 ? "lessons" : "lesson")</span></i>
+                    </div>
+                    <small class="text-primary">
+                        <span class="fw-bold text-primary">Added: </span>@Model.DateOfPublication.ToString("d")
+                    </small>
+                </div>
+            </div>
+        </div>
+    </a>
+</div>

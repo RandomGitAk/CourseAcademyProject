@@ -1,0 +1,102 @@
+﻿@using CourseAcademyProject.ViewModels
+@{
+    Layout = "_PanelLayout.cshtml";
+    ViewData["Title"] = "Main";
+   
+}
+@model MainAdminPageViewModel
+
+    <main class="content px-3 py-2">
+        <div class="container-fluid">
+            <div class="mb-3">
+                <h4>Admin Dashboard</h4>
+            </div>
+            <div class="row">
+                <div class="col-12 col-md-6 d-flex">
+                    <div class="card flex-fill border-0 illustration">
+                        <div class="card-body p-0 d-flex flex-fill">
+                            <div class="row g-0 w-100">
+                                <div class="col-6">
+                                    <div class="p-3 m-1">
+                                    <h5>Welcome Back, <small>@User.Identity.Name</small></h5>
+                                        <p class="mb-0">Admin Dashboard, Course Academy</p>
+                                    </div>
+                                </div>
+                                <div class="col-6 align-self-end text-end">
+                                    <img src="~/assets/img/admin/customer-support.jpg" class="img-fluid illustration-img"
+                                         alt="">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 d-flex">
+                    <div class="card flex-fill border-0">
+                        <div class="card-body py-4">
+                            <div class="d-flex align-items-start">
+                                <div class="flex-grow-1">
+                                    <h4 class="mb-2">
+                                        $ @Model.TotalIncome
+                                    </h4>
+                                    <p class="mb-2">
+                                        Total Earnings
+                                    </p>
+                                    <div class="mb-0">
+                                        <span class="badge text-success me-2">
+                                        +  $ @Model.IncomeByCurrentMonth
+                                        </span>
+                                        <span class="text-muted">
+                                            Current Month
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Table Element -->
+            <div class="card border-0">
+                <div class="card-header">
+                    <h5 class="card-title">
+                        Modules
+                    </h5>
+                    <h6 class="card-subtitle text-muted">
+                    Short statistics of the platform
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Module</th>
+                                <th scope="col">Quantity</th>
+                                <th scope="col">Link</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Categories</td>
+                                <td>@Model.CountCategories</td>
+                                <td><a asp-action="Categories" asp-controller="Category" class="btn btn-primary">Go to</a></td>
+                            </tr>
+                            <tr>
+                                <td>Course</td>
+                                <td>@Model.CountCourses</td>
+                                <td><a asp-action="Courses" asp-controller="Course" class="btn btn-primary">Go to</a></td> 
+                            </tr>
+                            <tr>
+                                <td>Users</td>
+                                <td>@Model.CountUsers</td>
+                                <td><a asp-action="Users" asp-controller="Panel" class="btn btn-primary">Go to</a></td>
+                            </tr>
+                            <tr>
+                                <td>Users on courses</td>
+                                <td>@Model.CountUsersOnCourses</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>

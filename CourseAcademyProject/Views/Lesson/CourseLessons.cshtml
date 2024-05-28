@@ -1,0 +1,101 @@
+﻿@{
+    Layout = "~/Views/Panel/_PanelLayout.cshtml";
+    ViewData["Title"] = "CoursesLessons";
+}
+@model IEnumerable<Lesson>
+<main class="content px-3 py-2">
+    <div class="mb-3">
+        <h4>Сontrol panel</h4>
+    </div>
+
+    <div class="col">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a asp-action="Index" asp-controller="Panel" class="text-decoration-none">Course elements</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a asp-action="Courses" asp-controller="Course" class="text-decoration-none">Courses</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">
+                    Lessons
+                </li>
+            </ol>
+        </nav>
+    </div>
+
+    <div class="row g-4 py-5 row-cols-1">
+
+        <a asp-action="CreateLesson" asp-controller="Lesson" class="btn btn-primary mx-auto w-50">Add a new lesson</a>
+
+        <div class="input-group themability-search">
+            @{
+                ViewBag.searches = new string[] { "Title", "Course.Name" };
+            }
+            @await Html.PartialAsync("_SearchOptions", Model)
+        </div>
+
+
+        <div class="p-5 mb-4 bg-light rounded-3 ovx table-responsive">
+            <table class="table">
+                <tr><th>Title</th><th>Course</th><th>Date publication</th><th></th><th></th></tr>
+                @foreach (var lesson in Model)
+                {
+
+                    <tr data-rowid="@lesson.Id">
+                        <td>@lesson.Title</td>
+                        <td>@lesson.Course.Name</td>
+                        <td>@lesson.DateOfPublication</td>
+                        <td><a class="btn btn-sm btn-primary" asp-action="EditLesson" asp-controller="Lesson" asp-route-lessonId="@lesson.Id">Modify</a></td>
+                        <td>
+                            <button onclick="deleteLesson('@lesson.Id')" class="btn btn-sm btn-danger">Delete</button>
+                        </td>
+                    </tr>
+                }
+            </table>
+
+            <div class="text-center">
+                @await Html.PartialAsync("_Pages", Model)
+            </div>
+
+            @await Html.PartialAsync("_Modal", "Delete the selected lesson?")
+            @await Html.PartialAsync("_ValidationScriptsPartial")
+
+            @section Scripts {
+                <script>
+                    async function deleteLesson(lessonId) {
+
+                        const btnYes = document.getElementById('btn-Yes');
+                        const btnNo = document.getElementById('btn-No');
+
+                        console.log(lessonId);
+                        $('#confirmModal').modal('show');
+
+                        btnYes.onclick = () => {
+                            const deleteItem = fetch(`/panel/delete-lesson/?lessonId=${lessonId}`, { method: 'DELETE' })
+                                .then(response => {
+                                    if (!response.ok) {
+                                        throw new Error('Network response was not ok');
+                                    }
+
+                                    document.querySelector("tr[data-rowid='" + lessonId + "']").remove();
+
+                                    $('#confirmModal').modal('hide');
+                                })
+                                .catch(error => {
+                                    console.error('There was a problem with the fetch operation:', error);
+
+                                });
+                        }
+
+                        btnNo.onclick = () => {
+                            $('#confirmModal').modal('hide');
+                        }
+                    }
+                </script>
+
+            }
+
+        </div>
+    </div>
+</main>  

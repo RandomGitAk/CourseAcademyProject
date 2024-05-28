@@ -1,0 +1,103 @@
+﻿@{
+    Layout = "~/Views/Panel/_PanelLayout.cshtml";
+    ViewData["Title"] = "Comments";
+}
+@model IEnumerable<Comment>
+<main class="content px-3 py-2">
+    <div class="mb-3">
+        <h4>Сontrol panel</h4>
+    </div>
+
+    <div class="col">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a asp-action="Index" asp-controller="Panel" class="text-decoration-none">Course elements</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">
+                    Comments
+                </li>
+            </ol>
+        </nav>
+    </div>
+
+    <div class="row g-4 py-5 row-cols-1">
+
+
+        <div class="input-group themability-search">
+            @{
+                ViewBag.searches = new string[] { "Content", "User.FirstName" };
+            }
+            @await Html.PartialAsync("_SearchOptions", Model)
+        </div>
+
+
+        <div class="p-5 mb-4 bg-light rounded-3 ovx table-responsive">
+            <table class="table">
+                <tr><th>Content</th><th>Course</th><th>Date of publication</th><th>View comment on site</th><th></th></tr>
+                @foreach (var comment in Model)
+                {
+
+                    <tr data-rowid="@comment.Id">
+                        <td>@comment.Content</td>
+                        <td>@comment.Course.Name</td>
+                        <td>@comment.DateOfPublication.ToShortDateString()</td>
+                        <td>
+                            <a class="btn btn-sm btn-success"
+                           asp-action="CourseDetail"
+                           asp-controller="Home"
+                           asp-route-courseId="@comment.CourseId"
+                           asp-route-commentId="@comment.Id"
+                          >Go to</a>
+                        </td>
+                        <td>
+                            <button onclick="deleteComment('@comment.Id')" class="btn btn-sm btn-danger">Delete</button>
+                        </td>
+                    </tr>
+                }
+            </table>
+
+            <div class="text-center">
+                @await Html.PartialAsync("_Pages", Model)
+            </div>
+
+            @await Html.PartialAsync("_Modal", "Delete the selected comment? If you delete a comment with answers, the answers are also deleted")
+            @await Html.PartialAsync("_ValidationScriptsPartial")
+
+            @section Scripts {
+                <script>
+                    async function deleteComment(commentId) {
+                        const btnYes = document.getElementById('btn-Yes');
+                        const btnNo = document.getElementById('btn-No');
+
+                        console.log(commentId);
+                        $('#confirmModal').modal('show');
+
+                        // Оголошення функції як асинхронної
+                        btnYes.onclick = async () => {
+                            try {
+                                const response = await fetch(`/panel/delete-comment/?commentId=${commentId}`, { method: 'DELETE' });
+                                if (!response.ok) {
+                                    throw new Error('Network response was not ok');
+                                }
+                                const deletedCommentIds = await response.json();
+                                deletedCommentIds.forEach(id => {
+                                    document.querySelector("tr[data-rowid='" + id + "']").remove();
+                                });
+                                $('#confirmModal').modal('hide');
+                            } catch (error) {
+                                console.error('There was a problem with the fetch operation:', error);
+                            }
+                        }
+
+                        btnNo.onclick = () => {
+                            $('#confirmModal').modal('hide');
+                        }
+                    }
+                </script>
+
+            }
+
+        </div>
+    </div>
+</main>  

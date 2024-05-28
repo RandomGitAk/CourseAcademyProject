@@ -1,0 +1,27 @@
+﻿<select form="pageform" name="options.searchpropertyname" class="form-control">
+    @foreach (string s in ViewBag.searches as string[])
+    {
+        <option value="@s" selected="@(Model.Options.SearchPropertyName == s)">
+            @(
+                s switch
+                {
+                    "Email" => "Email",
+                    "LastName" => "Last name",
+                    "Name" => "Name",
+                    "Description" => "Description",
+                    "DifficultyLevel" => "Difficulty level",
+                    "Category.Name" => "Category",
+                    "Title" => "Title",
+                    "Course.Name" => "Course",
+                    "User.FirstName" => "User name",
+                    _ => s
+                }
+                )
+        </option>
+    }
+</select>
+
+<input form="pageform" name="options.searchterm" value="@Model.Options.SearchTerm" placeholder="Search..." class="form-control input-lg ui-autocomplete-input" />
+<span class="btn-search input-group-btn">
+    <button form="pageform" type="submit" class="btn btn-default btn-lg"><i class="fa fa-search"></i></button>
+</span>

@@ -1,0 +1,43 @@
+﻿@model Blog
+@{
+    ViewData["Title"] = "Blog";
+}
+
+<div class="container mt-5 bg-light">
+    <div class="row mt-5">
+        <div class="col">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a asp-action="Index" asp-controller="Home" class="text-decoration-none">Home</a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a asp-action="Blogs" asp-controller="Home" class="text-decoration-none">Blogs</a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">
+                        Blog @Model.Id
+                    </li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+       
+        <div class="card card-blog-news mb-5">
+
+            <div class="text-dark text-uppercase fs-3 text-center mt-3">
+                        @Model.Name
+            </div>
+
+            <div class="card-body">
+                <img  src="@Model.Image" class="img-fluid mx-auto d-block mb-3 px-md-5" style="width: 100%;" alt="Blog Image" >
+                <br />
+
+                 <div class="px-md-5">
+                @Html.Raw(@Model.Content)
+                </div>
+
+            </div>
+
+        </div>
+</div>
+    @await Html.PartialAsync("_FooterPartial")

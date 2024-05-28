@@ -1,0 +1,120 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="wwwroot\lib\booot\**" />
+    <Content Remove="wwwroot\lib\booot\**" />
+    <EmbeddedResource Remove="wwwroot\lib\booot\**" />
+    <None Remove="wwwroot\lib\booot\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MailKit" Version="4.3.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Stripe.net" Version="43.20.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\lib\bootstrap5_2_3\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\assets\js\forala\froala_editor.min.js" />
+    <None Include="wwwroot\assets\js\forala\froala_editor.pkgd.min.js" />
+    <None Include="wwwroot\assets\js\forala\languages\ar.js" />
+    <None Include="wwwroot\assets\js\forala\languages\bs.js" />
+    <None Include="wwwroot\assets\js\forala\languages\cs.js" />
+    <None Include="wwwroot\assets\js\forala\languages\da.js" />
+    <None Include="wwwroot\assets\js\forala\languages\de.js" />
+    <None Include="wwwroot\assets\js\forala\languages\el.js" />
+    <None Include="wwwroot\assets\js\forala\languages\en_ca.js" />
+    <None Include="wwwroot\assets\js\forala\languages\en_gb.js" />
+    <None Include="wwwroot\assets\js\forala\languages\es.js" />
+    <None Include="wwwroot\assets\js\forala\languages\et.js" />
+    <None Include="wwwroot\assets\js\forala\languages\fa.js" />
+    <None Include="wwwroot\assets\js\forala\languages\fi.js" />
+    <None Include="wwwroot\assets\js\forala\languages\fr.js" />
+    <None Include="wwwroot\assets\js\forala\languages\he.js" />
+    <None Include="wwwroot\assets\js\forala\languages\hr.js" />
+    <None Include="wwwroot\assets\js\forala\languages\hu.js" />
+    <None Include="wwwroot\assets\js\forala\languages\id.js" />
+    <None Include="wwwroot\assets\js\forala\languages\it.js" />
+    <None Include="wwwroot\assets\js\forala\languages\ja.js" />
+    <None Include="wwwroot\assets\js\forala\languages\ko.js" />
+    <None Include="wwwroot\assets\js\forala\languages\ku.js" />
+    <None Include="wwwroot\assets\js\forala\languages\me.js" />
+    <None Include="wwwroot\assets\js\forala\languages\nb.js" />
+    <None Include="wwwroot\assets\js\forala\languages\nl.js" />
+    <None Include="wwwroot\assets\js\forala\languages\pl.js" />
+    <None Include="wwwroot\assets\js\forala\languages\pt_br.js" />
+    <None Include="wwwroot\assets\js\forala\languages\pt_pt.js" />
+    <None Include="wwwroot\assets\js\forala\languages\ro.js" />
+    <None Include="wwwroot\assets\js\forala\languages\ru.js" />
+    <None Include="wwwroot\assets\js\forala\languages\sk.js" />
+    <None Include="wwwroot\assets\js\forala\languages\sl.js" />
+    <None Include="wwwroot\assets\js\forala\languages\sr.js" />
+    <None Include="wwwroot\assets\js\forala\languages\sv.js" />
+    <None Include="wwwroot\assets\js\forala\languages\th.js" />
+    <None Include="wwwroot\assets\js\forala\languages\tr.js" />
+    <None Include="wwwroot\assets\js\forala\languages\uk.js" />
+    <None Include="wwwroot\assets\js\forala\languages\vi.js" />
+    <None Include="wwwroot\assets\js\forala\languages\zh_cn.js" />
+    <None Include="wwwroot\assets\js\forala\languages\zh_tw.js" />
+    <None Include="wwwroot\assets\js\forala\plugins.pkgd.min.js" />
+    <None Include="wwwroot\assets\js\forala\plugins\align.min.js" />
+    <None Include="wwwroot\assets\js\forala\plugins\char_counter.min.js" />
+    <None Include="wwwroot\assets\js\forala\plugins\code_beautifier.min.js" />
+    <None Include="wwwroot\assets\js\forala\plugins\code_view.min.js" />
+    <None Include="wwwroot\assets\js\forala\plugins\colors.min.js" />
+    <None Include="wwwroot\assets\js\forala\plugins\cryptojs.min.js" />
+    <None Include="wwwroot\assets\js\forala\plugins\draggable.min.js" />
+    <None Include="wwwroot\assets\js\forala\plugins\edit_in_popup.min.js" />
+    <None Include="wwwroot\assets\js\forala\plugins\emoticons.min.js" />
+    <None Include="wwwroot\assets\js\forala\plugins\entities.min.js" />
+    <None Include="wwwroot\assets\js\forala\plugins\file.min.js" />
+    <None Include="wwwroot\assets\js\forala\plugins\files_manager.min.js" />
+    <None Include="wwwroot\assets\js\forala\plugins\font_family.min.js" />
+    <None Include="wwwroot\assets\js\forala\plugins\font_size.min.js" />
+    <None Include="wwwroot\assets\js\forala\plugins\forms.min.js" />
+    <None Include="wwwroot\assets\js\forala\plugins\fullscreen.min.js" />
+    <None Include="wwwroot\assets\js\forala\plugins\help.min.js" />
+    <None Include="wwwroot\assets\js\forala\plugins\image.min.js" />
+    <None Include="wwwroot\assets\js\forala\plugins\image_manager.min.js" />
+    <None Include="wwwroot\assets\js\forala\plugins\inline_class.min.js" />
+    <None Include="wwwroot\assets\js\forala\plugins\inline_style.min.js" />
+    <None Include="wwwroot\assets\js\forala\plugins\line_breaker.min.js" />
+    <None Include="wwwroot\assets\js\forala\plugins\line_height.min.js" />
+    <None Include="wwwroot\assets\js\forala\plugins\link.min.js" />
+    <None Include="wwwroot\assets\js\forala\plugins\lists.min.js" />
+    <None Include="wwwroot\assets\js\forala\plugins\markdown.min.js" />
+    <None Include="wwwroot\assets\js\forala\plugins\paragraph_format.min.js" />
+    <None Include="wwwroot\assets\js\forala\plugins\paragraph_style.min.js" />
+    <None Include="wwwroot\assets\js\forala\plugins\print.min.js" />
+    <None Include="wwwroot\assets\js\forala\plugins\quick_insert.min.js" />
+    <None Include="wwwroot\assets\js\forala\plugins\quote.min.js" />
+    <None Include="wwwroot\assets\js\forala\plugins\save.min.js" />
+    <None Include="wwwroot\assets\js\forala\plugins\special_characters.min.js" />
+    <None Include="wwwroot\assets\js\forala\plugins\table.min.js" />
+    <None Include="wwwroot\assets\js\forala\plugins\track_changes.min.js" />
+    <None Include="wwwroot\assets\js\forala\plugins\trim_video.min.js" />
+    <None Include="wwwroot\assets\js\forala\plugins\url.min.js" />
+    <None Include="wwwroot\assets\js\forala\plugins\video.min.js" />
+    <None Include="wwwroot\assets\js\forala\plugins\word_paste.min.js" />
+    <None Include="wwwroot\assets\js\forala\third_party\embedly.min.js" />
+    <None Include="wwwroot\assets\js\forala\third_party\font_awesome.min.js" />
+    <None Include="wwwroot\assets\js\forala\third_party\image_tui.min.js" />
+    <None Include="wwwroot\assets\js\forala\third_party\showdown.min.js" />
+    <None Include="wwwroot\assets\js\forala\third_party\spell_checker.min.js" />
+  </ItemGroup>
+
+</Project>

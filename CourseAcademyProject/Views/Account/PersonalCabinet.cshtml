@@ -1,0 +1,81 @@
+﻿@using CourseAcademyProject.ViewModels
+@{
+    Layout = "~/Views/Account/_AccountLayout.cshtml";
+}
+@model PersonalCabinteViewModel
+
+<!-- Breadcrumb -->
+<nav aria-label="breadcrumb" class="main-breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Home">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Personal cabinet</li>
+    </ol>
+</nav>
+<!-- /Breadcrumb -->
+
+
+<h6>PERSONAL CABINET</h6>
+<hr>
+
+@* <form asp-action="FindTest" asp-controller="UserTest" method="post">
+    <div class="input-group input-group-lg mb-3">
+        <input class="form-control input-search-mobile" name="testName" value="@Model.TestName" type="text" placeholder="Enter the name of the test...">
+        <input type="hidden" name="courseId" value="@Model.CourseId" />
+        <button class="btn btn-primary animated--fade-in-up" type="submit">Search</button>
+    </div>
+</form> *@
+<form asp-action="FindCourse" asp-controller="Account" method="post" asp-antiforgery="true">
+    <div class="d-flex flex-column flex-sm-row input-group input-group-lg mb-5">
+        <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            @(Model.CategoryId != 0 ? Model.AllCategories.FirstOrDefault(e=> e.Id == Model.CategoryId).Name : "All")
+        </button>
+        <ul class="dropdown-menu">
+        <li> <a class="dropdown-item" asp-action="PersonalCabinet" asp-controller="Account">All</a></li>
+        @foreach (var category in Model.AllCategories)
+        {
+           <li> <a class="dropdown-item" asp-action="PersonalCabinet" asp-controller="Account" asp-route-categoryId="@category.Id">@category.Name</a></li>
+        }
+        </ul>
+        <input type="hidden" name="categoryId">
+        <input class="form-control input-search-mobile my-input-search" name="courseName" value="@Model.CourseName" type="text" aria-label="Enter the title of the coures" placeholder="Enter the title of the coures...">
+
+        <button class="btn btn-primary animated--fade-in-up" type="submit">Search</button>
+    </div>
+</form>
+
+<hr class="mb-4">
+@if (Model.Courses.Count() == 0)
+{
+    <div class="text-center my-10">
+        <h2>Nothing found!</h2>
+        <p class="lead text-gray-500 mb-4 h-100">
+            You may have made a spelling error in your search or
+            you have not yet been given this material.
+        </p>
+        <a class="btn btn-primary fw-500" asp-action="PersonalCabinet" asp-controller="Account">Reset search</a>
+    </div>
+}else 
+{
+    <div class="row row-cols-1 row-cols-md-2 g-3">
+
+            @foreach (var course in Model.Courses)
+            {
+                int passingPercentageTests = (int)(course.PassedTestsCount == 0 ? 0 : ((decimal)course.PassedTestsCount / course.TotalTestsCount) * 100);
+                <div class="col">
+                    <a asp-action="CourseDetail" asp-controller="Home" asp-route-courseId="@course.CourseId" class="text-decoration-none">
+                        <div class="card custom-card shadow-sm">
+                            <img src="@course.Image" class="card-img-top" alt="@course.CourseName" style="height:180px;">
+                            <div class="card-body">
+                                <h5 class="card-title">@course.CourseName</h5>
+                                <p class="card-text h-25">Progress of the course tests</p>
+                                <div class="progress" role="progressbar" aria-label="Default striped example" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100">
+                                    <div class="progress-bar progress-bar-striped" style="width: @passingPercentageTests%">@passingPercentageTests%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            }
+    </div>
+}
+

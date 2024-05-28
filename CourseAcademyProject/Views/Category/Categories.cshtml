@@ -1,0 +1,99 @@
+﻿@using CourseAcademyProject.ViewModels
+@{
+    Layout = "~/Views/Panel/_PanelLayout.cshtml";
+    ViewData["Title"] = "Categories";
+}
+@model IEnumerable<Category>
+ <main class="content px-3 py-2">
+    <div class="mb-3">
+        <h4>Сontrol panel</h4>
+    </div>
+
+    <div class="col">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a asp-action="Index" asp-controller="Panel" class="text-decoration-none">Course elements</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">
+                    Categories
+                </li>
+            </ol>
+        </nav>
+    </div>
+
+    <div class="row g-4 py-5 row-cols-1">
+
+        <a asp-action="CreateCategory" asp-controller="Category" class="btn btn-primary mx-auto w-50">Add a new category</a>
+
+        <div class="input-group themability-search">
+            @{
+                ViewBag.searches = new string[] { "Name", "Description" };
+            }
+            @await Html.PartialAsync("_SearchOptions", Model)
+        </div>
+
+
+        <div class="p-5 mb-4 bg-light rounded-3 ovx table-responsive">
+            <table class="table">
+                <tr><th>Name</th><th>Description</th><th></th><th></th></tr>
+                @foreach (var category in Model)
+                {
+
+                    <tr data-rowid="@category.Id">
+                        <td>@category.Name</td>
+                        <td>@category.Description</td>
+                        <td><a class="btn btn-sm btn-primary" asp-action="EditCategory" asp-controller="Category" asp-route-categoryId="@category.Id">Modify</a></td>
+                        <td>
+                            <button onclick="deleteCategory('@category.Id')" class="btn btn-sm btn-danger">Delete</button>
+                        </td>
+                    </tr>
+                }
+            </table>
+
+            <div class="text-center">
+                @await Html.PartialAsync("_Pages", Model)
+            </div>
+
+            @await Html.PartialAsync("_Modal", "Delete the selected category?")
+            @await Html.PartialAsync("_ValidationScriptsPartial")
+
+            @section Scripts {
+                <script>
+                    async function deleteCategory(categoryId) {
+
+                        const btnYes = document.getElementById('btn-Yes');
+                        const btnNo = document.getElementById('btn-No');
+
+                        console.log(categoryId);
+                        $('#confirmModal').modal('show');
+
+                        //Если нажали да, удаляем
+                        btnYes.onclick = () => {
+                            const deleteItem = fetch(`/panel/delete-category/?categoryId=${categoryId}`, { method: 'DELETE' })
+                                .then(response => {
+                                    if (!response.ok) {
+                                        throw new Error('Network response was not ok');
+                                    }
+                                    //Удаляем строку
+                                    document.querySelector("tr[data-rowid='" + categoryId + "']").remove();
+                                    //Закрываем модальное окно
+                                    $('#confirmModal').modal('hide');
+                                })
+                                .catch(error => {
+                                    console.error('There was a problem with the fetch operation:', error);
+                                    // Обработка ошибки удаления
+                                });
+                        }
+                        //Если нажали нет, скрываем
+                        btnNo.onclick = () => {
+                            $('#confirmModal').modal('hide');
+                        }
+                    }
+                </script>
+
+            }
+
+        </div>
+    </div>
+</main> 

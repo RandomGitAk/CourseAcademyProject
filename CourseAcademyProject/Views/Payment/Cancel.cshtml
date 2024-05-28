@@ -1,0 +1,21 @@
+﻿@{
+    ViewData["Title"] = "Succes payment";
+}
+@model int
+<div class="container mt-5">
+    <div class="row justify-content-center mt-4">
+        <div class="col-md-4 md-offset-4">
+            <div class="panel panel-default">
+                <div class="panel-body bg-white">
+                    <div class="text-center">
+                        <h2><i class="fa-regular fa-credit-card fa-4x"></i></h2>
+                        <h2 class="text-center">Cancel payment</h2>
+                        <p>Shop around then come back to pay!</p>
+                        <div class="panel-body">
+                            <a class="btn btn-primary" asp-action="CourseDetail" asp-controller="Home" asp-route-courseId="@Model">Go to course</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
